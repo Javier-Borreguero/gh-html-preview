@@ -2,9 +2,9 @@ const MAX_ENTRIES = 10;
 const ALLOWED_HOSTS = new Set(['github.com', 'raw.githubusercontent.com']);
 const memory = new Map();
 
-chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg?.type === 'preview') {
-    createPreview(msg)
+    createPreview(msg, sender.tab)
       .then(sendResponse)
       .catch((error) => sendResponse({ ok: false, error: String(error?.message || error) }));
     return true;
@@ -22,7 +22,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   return false;
 });
 
-async function createPreview({ rawUrl, name }) {
+async function createPreview({ rawUrl, name }, sourceTab) {
   const url = assertAllowed(rawUrl);
   const id = crypto.randomUUID();
   const entry = {
@@ -35,7 +35,13 @@ async function createPreview({ rawUrl, name }) {
   memory.set(id, entry);
   await chrome.storage.session.set({ [key(id)]: entry });
   await prune();
-  await chrome.tabs.create({ url: chrome.runtime.getURL(`viewer.html?id=${id}`) });
+  // Open beside the file it came from, not at the end of the strip, so the
+  // preview stays next to its source tab (and inherits its tab group).
+  await chrome.tabs.create({
+    url: chrome.runtime.getURL(`viewer.html?id=${id}`),
+    openerTabId: sourceTab?.id,
+    index: sourceTab ? sourceTab.index + 1 : undefined,
+  });
   return { ok: true, id };
 }
 
