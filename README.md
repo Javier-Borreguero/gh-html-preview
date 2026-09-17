@@ -106,3 +106,7 @@ when the document has none, so relative assets resolve.
 | `background.js` | Credentialed raw fetch, preview store, opens the viewer tab |
 | `viewer.html/js/css` | Toolbar tab: reload, copy, download, view raw |
 | `sandbox.html/js` | Sandboxed opaque-origin frame that renders the HTML |
+
+## License
+
+MIT — see [LICENSE](LICENSE).
