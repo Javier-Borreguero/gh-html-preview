@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "GitHub HTML Preview",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Adds a Preview button next to .html files on GitHub (blob view, PR diffs, commits) that renders them in a sandboxed tab.",
   "permissions": [
     "storage"

@@ -7,6 +7,11 @@
   button.textContent = 'Preview HTML';
   button.addEventListener('click', () => {
     button.textContent = 'Opening…';
+    if (!chrome.runtime?.id) {
+      button.textContent = 'Preview HTML';
+      alert('GitHub HTML Preview: this tab is running an older copy of the extension. Reload the page and try again.');
+      return;
+    }
     chrome.runtime.sendMessage(
       { type: 'preview', rawUrl: location.href, name: location.pathname.split('/').pop() },
       (response) => {

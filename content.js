@@ -1,8 +1,12 @@
 (() => {
   // Lets you confirm which build is live: document.documentElement.dataset.ghhp
-  document.documentElement.dataset.ghhp = '1.1.1';
+  document.documentElement.dataset.ghhp = '1.2.1';
 
   const HTML_FILE = /\.x?html?$/i;
+  // Reloading the extension orphans content scripts already injected into open
+  // tabs: they survive in the page but their chrome.runtime connection is dead.
+  const STALE_BUILD =
+    'This tab is running an older copy of the extension. Reload the page and try again.';
 
   const ICON = `<svg aria-hidden="true" height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 2c3.5 0 6.3 2.2 7.7 5.2.2.5.2 1.1 0 1.6C14.3 11.8 11.5 14 8 14s-6.3-2.2-7.7-5.2a1.9 1.9 0 0 1 0-1.6C1.7 4.2 4.5 2 8 2Zm0 1.5c-2.8 0-5.2 1.8-6.4 4.5C2.8 10.7 5.2 12.5 8 12.5s5.2-1.8 6.4-4.5C13.2 5.3 10.8 3.5 8 3.5Zm0 1.75a2.75 2.75 0 1 1 0 5.5 2.75 2.75 0 0 1 0-5.5Z"/></svg>`;
 
@@ -36,14 +40,24 @@
     return button;
   }
 
+  function isStale(message) {
+    return /context invalidated|Receiving end does not exist/i.test(message || '');
+  }
+
   function requestPreview(rawUrl, name) {
     return new Promise((resolve, reject) => {
-      chrome.runtime.sendMessage({ type: 'preview', rawUrl, name }, (response) => {
-        const failure = chrome.runtime.lastError?.message;
-        if (failure) return reject(new Error(failure));
-        if (!response?.ok) return reject(new Error(response?.error || 'Unknown error'));
-        resolve(response);
-      });
+      if (!chrome.runtime?.id) return reject(new Error(STALE_BUILD));
+      try {
+        chrome.runtime.sendMessage({ type: 'preview', rawUrl, name }, (response) => {
+          const failure = chrome.runtime.lastError?.message;
+          if (failure) return reject(new Error(isStale(failure) ? STALE_BUILD : failure));
+          if (!response?.ok) return reject(new Error(response?.error || 'Unknown error'));
+          resolve(response);
+        });
+      } catch (error) {
+        const message = String(error?.message || error);
+        reject(new Error(isStale(message) ? STALE_BUILD : message));
+      }
     });
   }
 
