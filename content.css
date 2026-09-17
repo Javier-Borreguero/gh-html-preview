@@ -1,0 +1,34 @@
+.ghhp-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 12px;
+  margin: 0 4px 0 0;
+  font: 600 12px/1 -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  color: var(--button-default-fgColor-rest, var(--fgColor-default, #1f2328));
+  background-color: var(--button-default-bgColor-rest, var(--bgColor-default, #f6f8fa));
+  border: 1px solid var(--button-default-borderColor-rest, var(--borderColor-default, #d1d9e0));
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ghhp-button:hover {
+  background-color: var(--button-default-bgColor-hover, #eef1f4);
+}
+
+.ghhp-button--diff {
+  height: 24px;
+  padding: 0 8px;
+  align-self: center;
+}
+
+.ghhp-button--floating {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 2147483647;
+  height: 32px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}

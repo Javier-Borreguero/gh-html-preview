@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>HTML Preview</title>
+    <link rel="stylesheet" href="viewer.css" />
+  </head>
+  <body>
+    <header class="bar">
+      <span class="badge">Sandboxed preview</span>
+      <span class="name" id="name">Loading…</span>
+      <span class="spacer"></span>
+      <button type="button" id="reload">Reload</button>
+      <button type="button" id="copy">Copy HTML</button>
+      <button type="button" id="download">Download</button>
+      <a id="raw" class="button" target="_blank" rel="noopener">View raw</a>
+    </header>
+    <p class="error" id="error" hidden></p>
+    <iframe id="frame" src="sandbox.html" title="HTML preview"></iframe>
+    <script src="viewer.js"></script>
+  </body>
+</html>

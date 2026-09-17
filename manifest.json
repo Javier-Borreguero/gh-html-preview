@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "GitHub HTML Preview",
+  "version": "1.1.1",
+  "description": "Adds a Preview button next to .html files on GitHub (blob view, PR diffs, commits) that renders them in a sandboxed tab.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://github.com/*",
+    "https://raw.githubusercontent.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://github.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://raw.githubusercontent.com/*"
+      ],
+      "js": [
+        "raw-content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "sandbox": {
+    "pages": [
+      "sandbox.html"
+    ]
+  },
+  "content_security_policy": {
+    "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals allow-downloads; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src * data: blob:; font-src * data:; media-src * data: blob:; connect-src *; frame-src *; child-src *;"
+  }
+}
